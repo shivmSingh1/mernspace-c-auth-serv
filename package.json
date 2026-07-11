@@ -1,0 +1,24 @@
+{
+  "name": "authservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shivmSingh1/mernspace-c-auth-serv.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/shivmSingh1/mernspace-c-auth-serv/issues"
+  },
+  "homepage": "https://github.com/shivmSingh1/mernspace-c-auth-serv#readme",
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

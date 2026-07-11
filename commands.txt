@@ -2,3 +2,15 @@
 2- nvm install -lts (latest lst version)
 3- nvm use (use the specifed version in nvmrc file)
 4- nvm install (install the version of node if not found in nvm ls)
+
+5- setting up typescript config 
+npm i -D typescript
+npmx tsc --init
+
+un comment these 2 lines in tsconfig
+ "rootDir": "./src",
+ "outDir": "./dist",
+
+6- install node types
+
+npx i -D @types/node

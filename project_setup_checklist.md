@@ -2,7 +2,7 @@ Checklist for the express project initial setup
 
 [✔️] Git SetUp.
 [✔️] NVM SetUp.
-[] Node Js Project SetUp
+[✔️] Node Js Project SetUp
 [] TypeScript SetUp
 [] Prettier SetUp
 [] Eslint SetUp

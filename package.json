@@ -7,6 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "format:fix": "npx prettier . --write",
     "format:check": "npx prettier . --check",
+    "lint:check": "eslint . --check",
+    "lint:fix": "eslint . --fix",
     "run": "node src/server.ts"
   },
   "repository": {
@@ -22,7 +24,10 @@
   },
   "homepage": "https://github.com/shivmSingh1/mernspace-c-auth-serv#readme",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.7.0",
     "prettier": "3.9.5",
-    "typescript": "^7.0.2"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.63.0"
   }
 }

@@ -1,0 +1,4 @@
+1- nvm ls
+2- nvm install -lts (latest lst version)
+3- nvm use (use the specifed version in nvmrc file)
+4- nvm install (install the version of node if not found in nvm ls)

@@ -22,7 +22,7 @@ export default defineConfig({
 	},
 
 	rules: {
-		"no-console": "error", // Backend me console.log common hota hai
-		"dot-notation": "off"
+		"no-console": "warn",
+		"dot-notation": "error"
 	},
 });

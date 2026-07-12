@@ -1,7 +1,8 @@
 console.log('hello');
 
 const student = {
-	name: "Shivam",
+    name: 'Shivam',
 };
 
-console.log(student["name"]);
+console.log(student.name);
+console.log('shivam');

@@ -1,3 +1,5 @@
+// https://typescript-eslint.io/getting-started
+
 import js from "@eslint/js";
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";

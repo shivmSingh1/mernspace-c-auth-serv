@@ -32,5 +32,5 @@ and add a script in package.json for prettier
 now add rules in .prettierrc
 
 9- setup git hook (precommit)
-install husky hook (npm install --save-dev husky)
-npx husky init
+https://typicode.github.io/husky/how-to.html run on pre commit 
+https://github.com/lint-staged/lint-staged run husky only on staged files not on overall project 

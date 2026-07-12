@@ -1,3 +1,5 @@
+<!-- https://prettier.io/docs/install/ -->
+
 # Ignore artifacts:
 dist
 coverage

@@ -9,7 +9,8 @@
     "format:check": "npx prettier . --check",
     "lint:check": "eslint . --check",
     "lint:fix": "eslint . --fix",
-    "run": "node src/server.ts"
+    "run": "node src/server.ts",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -26,8 +27,16 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.7.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
     "prettier": "3.9.5",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.63.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run lint:fix",
+      "npm run format:fix"
+    ]
   }
 }

@@ -12,7 +12,8 @@
     // For nodejs:
     // "lib": ["esnext"],
     "types": [
-      "node"
+      "node",
+      "jest"
     ],
     // and npm install -D @types/node
     // Other Outputs
@@ -32,7 +33,7 @@
     // Recommended Options
     "strict": true,
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",

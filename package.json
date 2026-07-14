@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "format:fix": "npx prettier . --write",
     "format:check": "npx prettier . --check",
     "lint:check": "eslint . --check",
@@ -19,7 +19,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "bugs": {
     "url": "https://github.com/shivmSingh1/mernspace-c-auth-serv/issues"
   },
@@ -27,11 +26,14 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/http-errors": "^2.0.5",
+    "@types/jest": "^30.0.0",
     "@types/node": "^26.1.1",
     "eslint": "^10.7.0",
     "husky": "^9.1.7",
+    "jest": "^30.4.2",
     "lint-staged": "^17.0.8",
     "prettier": "3.9.5",
+    "ts-jest": "^29.4.11",
     "tsx": "^4.23.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.63.0"

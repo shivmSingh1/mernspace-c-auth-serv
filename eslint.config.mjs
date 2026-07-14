@@ -8,7 +8,7 @@ import tseslint from "typescript-eslint";
 export default defineConfig({
 	files: ["**/*.{ts,js}"],
 
-	ignores: ["dist", "node_modules"],
+	ignores: ["dist", "node_modules", "jest.config.js"],
 
 	extends: [
 		js.configs.recommended,

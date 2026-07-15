@@ -1,13 +1,13 @@
-Checklist for the express project initial setup
+# Checklist for the express project initial setup
 
-[✔️] Git SetUp.
-[✔️] NVM SetUp.
-[✔️] Node Js Project SetUp
-[✔️] TypeScript SetUp
-[✔️] Prettier SetUp
-[✔️] Eslint SetUp
-[✔️] Git hooks SetUp
-[✔️] App config SetUp (env)
-[] ExpressJs app SetUp
-[] Tests SetUp
-[] Create Template
+1. [✔️] Git SetUp.
+2. [✔️] NVM SetUp.
+3. [✔️] Node Js Project SetUp
+4. [✔️] TypeScript SetUp
+5. [✔️] Prettier SetUp
+6. [✔️] Eslint SetUp
+7. [✔️] Git hooks SetUp
+8. [✔️] App config SetUp (env)
+9. [✔️] ExpressJs app SetUp
+10. [✔️] Tests SetUp
+11. [✔️] Create Template

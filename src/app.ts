@@ -4,6 +4,7 @@ import express, {
     type Response,
 } from 'express';
 import type { HttpError } from 'http-errors';
+import router from './routes/auth';
 // import createHttpError from 'http-errors';
 
 const app = express();
@@ -13,6 +14,8 @@ app.get('/', (req, res) => {
     // throw err
     res.send('Auth service is working');
 });
+
+app.use('/auth', router);
 
 //global error handler
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {

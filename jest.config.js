@@ -8,4 +8,5 @@ export default {
   transform: {
     ...tsJestTransformCfg,
   },
+  verbose: true //show tree like structure in output
 };

@@ -5,6 +5,7 @@ import express, {
 } from 'express';
 import type { HttpError } from 'http-errors';
 import router from './routes/auth';
+import 'reflect-metadata';
 // import createHttpError from 'http-errors';
 
 const app = express();

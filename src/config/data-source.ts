@@ -4,8 +4,6 @@ import { User } from '../entities/User';
 import { Config } from './index';
 // import { Config } from "./index"
 
-console.log(Config.DB_HOST);
-
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: Config.DB_HOST,

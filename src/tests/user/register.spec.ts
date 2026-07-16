@@ -1,8 +1,33 @@
 import request from 'supertest';
 import app from '../../app';
+import { User } from '../../entities/User';
+import { DataSource } from 'typeorm';
+import { AppDataSource } from '../../config/data-source';
+import { truncateTables } from '../utils';
 
 describe('POST /auth/register', () => {
     describe('given all fields', () => {
+        let connection: DataSource;
+
+        beforeAll(async () => {
+            try {
+                console.log('Initializing DB...');
+                connection = await AppDataSource.initialize();
+                console.log('DB Connected');
+            } catch (err) {
+                console.error('DB Error:', err);
+                throw err;
+            }
+        }, 30000);
+
+        beforeEach(async () => {
+            await truncateTables(connection);
+        });
+
+        afterAll(async () => {
+            await connection.destroy();
+        });
+
         it('should return 201 status code', async () => {
             //follow AAA
             //Arrange
@@ -35,6 +60,21 @@ describe('POST /auth/register', () => {
             expect(response.headers['content-type']).toEqual(
                 expect.stringContaining('json'),
             );
+        });
+
+        it('should persist the user in database.', async () => {
+            const userData = {
+                firstname: 'shivam',
+                lastname: 'singh',
+                email: 'shivam@gmail.com',
+                password: 'secret',
+            };
+            //Act
+            await request(app).post('/auth/register').send(userData);
+
+            const userRepository = connection.getRepository(User);
+            const users = await userRepository.find();
+            expect(users).toHaveLength(1);
         });
     });
 

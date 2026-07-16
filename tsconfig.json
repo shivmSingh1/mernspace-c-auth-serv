@@ -3,6 +3,8 @@
    "compilerOptions": {
       // File Layout
       "rootDir": "./src",
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
       "outDir": "./dist",
       // Environment Settings
       // See also https://aka.ms/tsconfig/module
@@ -25,6 +27,7 @@
       // Stricter Typechecking Options
       "noUncheckedIndexedAccess": true,
       "exactOptionalPropertyTypes": true,
+      "strictPropertyInitialization": false,
       // Style Options
       // "noImplicitReturns": true,
       // "noImplicitOverride": true,
@@ -45,6 +48,4 @@
       "esm": true,
       "experimentalResolver": true
    },
-   "emitDecoratorMetadata": true,
-   "experimentalDecorators": true,
 }

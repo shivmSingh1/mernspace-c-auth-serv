@@ -16,6 +16,7 @@ app.get('/', (req, res) => {
     res.send('Auth service is working');
 });
 
+app.use(express.json());
 app.use('/auth', router);
 
 //global error handler

@@ -32,8 +32,8 @@ describe('POST /auth/register', () => {
             //follow AAA
             //Arrange
             const userData = {
-                firstname: 'shivam',
-                lastname: 'singh',
+                firstName: 'shivam',
+                lastName: 'singh',
                 email: 'shivam@gmail.com',
                 password: 'secret',
             };
@@ -47,8 +47,8 @@ describe('POST /auth/register', () => {
 
         it('should return a valid JSON', async () => {
             const userData = {
-                firstname: 'shivam',
-                lastname: 'singh',
+                firstName: 'shivam',
+                lastName: 'singh',
                 email: 'shivam@gmail.com',
                 password: 'secret',
             };
@@ -64,8 +64,8 @@ describe('POST /auth/register', () => {
 
         it('should persist the user in database.', async () => {
             const userData = {
-                firstname: 'shivam',
-                lastname: 'singh',
+                firstName: 'shivam',
+                lastName: 'singh',
                 email: 'shivam@gmail.com',
                 password: 'secret',
             };

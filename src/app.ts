@@ -6,6 +6,7 @@ import express, {
 import type { HttpError } from 'http-errors';
 import router from './routes/auth';
 import 'reflect-metadata';
+import logger from './config/logger';
 // import createHttpError from 'http-errors';
 
 const app = express();
@@ -21,6 +22,7 @@ app.use('/auth', router);
 
 //global error handler
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
+    logger.error(err.message);
     const statusCode = err.statusCode || 500;
     res.status(statusCode).json({
         errors: [

@@ -10,7 +10,7 @@
 // https://www.npmjs.com/package/winston
 
 import winston from 'winston';
-import { Config } from './index.js';
+import { Config } from './index';
 
 const logger = winston.createLogger({
     level: 'info',

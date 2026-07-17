@@ -69,12 +69,25 @@ describe('POST /auth/register', () => {
                 email: 'shivam@gmail.com',
                 password: 'secret',
             };
-            //Act
             await request(app).post('/auth/register').send(userData);
 
             const userRepository = connection.getRepository(User);
             const users = await userRepository.find();
             expect(users).toHaveLength(1);
+        });
+
+        it('should return the id of newly created user.', async () => {
+            const userData = {
+                firstName: 'shivam',
+                lastName: 'singh',
+                email: 'shivam@gmail.com',
+                password: 'secret',
+            };
+
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+            expect(response.body).toHaveProperty('id');
         });
     });
 

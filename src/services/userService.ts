@@ -13,11 +13,13 @@ export class UserService {
 
     async create({ firstName, lastName, email, password }: UserData) {
         // const userRepository = AppDataSource.getRepository(User);
-        await this.userRepository.save({
+        const user = await this.userRepository.save({
             firstName,
             lastName,
             email,
             password,
         });
+
+        return user;
     }
 }

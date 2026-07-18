@@ -118,9 +118,28 @@ describe('POST /auth/register', () => {
             await request(app).post('/auth/register').send(userData);
             const userRepository = connection.getRepository(User);
 
-            const user = await userRepository.find();
-            expect(user[0]?.password).not.toBe(userData.password);
-            expect(user[0]?.password).toHaveLength(60);
+            const users = await userRepository.find();
+            expect(users[0]?.password).not.toBe(userData.password);
+            expect(users[0]?.password).toHaveLength(60);
+        });
+
+        it('should return 400 status code if email already exist.', async () => {
+            const userData = {
+                firstName: 'shivam',
+                lastName: 'singh',
+                email: 'shivam@gmail.com',
+                password: 'secret',
+            };
+
+            const userRepository = connection.getRepository(User); //getting user table
+            await userRepository.save({ ...userData, role: Roles.CUSTOMER });
+
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+            const users = await userRepository.find(); //finding all users from table
+            expect(response.statusCode).toBe(400);
+            expect(users).toHaveLength(1);
         });
     });
 

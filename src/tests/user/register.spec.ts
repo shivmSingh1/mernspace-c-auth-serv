@@ -107,6 +107,21 @@ describe('POST /auth/register', () => {
             expect(users[0]).toHaveProperty('role');
             expect(users[0]?.role).toBe(Roles.CUSTOMER);
         });
+
+        it('should return hashed password', async () => {
+            const userData = {
+                firstName: 'shivam',
+                lastName: 'singh',
+                email: 'shivam@gmail.com',
+                password: 'secret',
+            };
+            await request(app).post('/auth/register').send(userData);
+            const userRepository = connection.getRepository(User);
+
+            const user = await userRepository.find();
+            expect(user[0]?.password).not.toBe(userData.password);
+            expect(user[0]?.password).toHaveLength(60);
+        });
     });
 
     describe('fields are missing', () => {});

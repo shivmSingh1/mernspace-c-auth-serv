@@ -2,6 +2,7 @@ import { NextFunction, Response } from 'express';
 import { RegisterUserInterface } from '../types';
 import { UserService } from '../services/userService';
 import { Logger } from 'winston';
+import bcrypt from 'bcrypt';
 
 export class AuthController {
     // private userService: UserService;
@@ -28,13 +29,16 @@ export class AuthController {
             password: '******',
         });
 
+        const saltRound = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRound);
+
         let user;
         try {
             user = await this.userService.create({
                 firstName,
                 lastName,
                 email,
-                password,
+                password: hashedPassword,
             });
 
             this.logger.info('user has been registerd', { id: user.id });

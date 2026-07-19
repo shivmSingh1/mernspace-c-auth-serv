@@ -3,6 +3,8 @@ import { RegisterUserInterface } from '../types';
 import { UserService } from '../services/userService';
 import { Logger } from 'winston';
 import bcrypt from 'bcrypt';
+import createHttpError from 'http-errors';
+import { validationResult } from 'express-validator';
 
 export class AuthController {
     // private userService: UserService;
@@ -28,6 +30,13 @@ export class AuthController {
             email,
             password: '******',
         });
+
+        //validation
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            const err = createHttpError(400, 'email is missing');
+            throw err;
+        }
 
         const saltRound = 10;
         const hashedPassword = await bcrypt.hash(password, saltRound);

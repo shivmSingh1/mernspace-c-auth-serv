@@ -7,30 +7,30 @@ import { Roles } from '../../constants';
 // import { truncateTables } from '../utils';
 
 describe('POST /auth/register', () => {
+    let connection: DataSource;
+
+    beforeAll(async () => {
+        try {
+            console.log('Initializing DB...');
+            connection = await AppDataSource.initialize();
+            console.log('DB Connected');
+        } catch (err) {
+            console.error('DB Error:', err);
+            throw err;
+        }
+    }, 30000);
+
+    beforeEach(async () => {
+        // await truncateTables(connection);
+        await connection.dropDatabase();
+        await connection.synchronize();
+    });
+
+    afterAll(async () => {
+        await connection.destroy();
+    });
+
     describe('given all fields', () => {
-        let connection: DataSource;
-
-        beforeAll(async () => {
-            try {
-                console.log('Initializing DB...');
-                connection = await AppDataSource.initialize();
-                console.log('DB Connected');
-            } catch (err) {
-                console.error('DB Error:', err);
-                throw err;
-            }
-        }, 30000);
-
-        beforeEach(async () => {
-            // await truncateTables(connection);
-            await connection.dropDatabase();
-            await connection.synchronize();
-        });
-
-        afterAll(async () => {
-            await connection.destroy();
-        });
-
         it('should return 201 status code', async () => {
             //follow AAA
             //Arrange
@@ -143,5 +143,20 @@ describe('POST /auth/register', () => {
         });
     });
 
-    describe('fields are missing', () => {});
+    describe('fields are missing', () => {
+        it('should return 400 status code if email are missing.', async () => {
+            const userData = {
+                firstName: 'shivam',
+                lastName: 'singh',
+                email: '',
+                password: 'secret',
+            };
+
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            expect(response.statusCode).toBe(400);
+        });
+    });
 });

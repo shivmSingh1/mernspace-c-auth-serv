@@ -158,5 +158,50 @@ describe('POST /auth/register', () => {
 
             expect(response.statusCode).toBe(400);
         });
+
+        it('should return 400 status code if firstName is missing', async () => {
+            const userData = {
+                firstName: '',
+                lastName: 'singh',
+                email: 'shivam@gmail.com',
+                password: 'secret',
+            };
+
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            expect(response.statusCode).toBe(400);
+        });
+
+        it('should return 400 status code if lastName is missing', async () => {
+            const userData = {
+                firstName: 'shivam',
+                lastName: '',
+                email: 'shivam@gmail.com',
+                password: 'secret',
+            };
+
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            expect(response.statusCode).toBe(400);
+        });
+
+        it('should return 400 status code if password is missing', async () => {
+            const userData = {
+                firstName: 'shivam',
+                lastName: 'singh',
+                email: 'shivam@gmail.com',
+                password: '',
+            };
+
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            expect(response.statusCode).toBe(400);
+        });
     });
 });

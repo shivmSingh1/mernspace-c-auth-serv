@@ -33,9 +33,12 @@ export class AuthController {
 
         //validation
         const result = validationResult(req);
+
         if (!result.isEmpty()) {
-            const err = createHttpError(400, 'email is missing');
-            throw err;
+            throw createHttpError(400, {
+                message: result.array().map((err) => String(err.msg)),
+                errors: result.array(),
+            });
         }
 
         const saltRound = 10;
@@ -50,7 +53,7 @@ export class AuthController {
                 password: hashedPassword,
             });
 
-            this.logger.info('user has been registerd', { id: user.id });
+            // this.logger.info('user has been registerd', { id: user.id });
             res.status(201).json({
                 id: user?.id,
             });

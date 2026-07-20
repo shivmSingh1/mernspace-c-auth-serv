@@ -141,6 +141,37 @@ describe('POST /auth/register', () => {
             expect(response.statusCode).toBe(400);
             expect(users).toHaveLength(1);
         });
+
+        it('should return access token and refresh token inside a cookie', async () => {
+            const userData = {
+                firstName: 'shivam',
+                lastName: 'singh',
+                email: 'shivam@gmail.com',
+                password: 'secret1234',
+            };
+
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            const cookies = (response.headers['set-cookie'] as string[]) || [];
+
+            let accessToken: string | undefined;
+            let refreshToken: string | undefined;
+
+            cookies.forEach((cookie: string) => {
+                if (cookie.startsWith('access-token=')) {
+                    accessToken = cookie.split(';')[0].split('=')[1];
+                }
+
+                if (cookie.startsWith('refresh-token=')) {
+                    refreshToken = cookie.split(';')[0].split('=')[1];
+                }
+            });
+
+            expect(accessToken).toBeDefined();
+            expect(refreshToken).toBeDefined();
+        });
     });
 
     describe('fields are missing', () => {

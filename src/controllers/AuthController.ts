@@ -55,21 +55,25 @@ export class AuthController {
 
             // this.logger.info('user has been registerd', { id: user.id });
 
-            // const accessToken =
-            //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzaGl2YW1AZ21haWwuY29tIiwicm9sZSI6IkNVU1RPTUVSIn0.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk';
+            const accessToken =
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzaGl2YW1AZ21haWwuY29tIiwicm9sZSI6IkNVU1RPTUVSIn0.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk';
 
-            // const refreshToken =
-            //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidHlwZSI6InJlZnJlc2gifQ.s5cJ7wM2j4k8R1V9N0XxYzAbCdEfGhIjKlMnOpQrStU';
+            const refreshToken =
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidHlwZSI6InJlZnJlc2gifQ.s5cJ7wM2j4k8R1V9N0XxYzAbCdEfGhIjKlMnOpQrStU';
 
-            // res.cookie('access-token', accessToken, {
-            //     httpOnly: true,
-            //     secure: false,
-            // });
+            res.cookie('access-token', accessToken, {
+                httpOnly: true,
+                secure: false,
+                domain: 'localhost',
+                maxAge: 1000 * 60 * 60,
+            });
 
-            // res.cookie('refresh-token', refreshToken, {
-            //     httpOnly: true,
-            //     secure: false,
-            // });
+            res.cookie('refresh-token', refreshToken, {
+                httpOnly: true,
+                secure: false,
+                domain: 'localhost',
+                maxAge: 1000 * 60 * 60 * 24 * 360,
+            });
 
             res.status(201).json({
                 id: user?.id,

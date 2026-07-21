@@ -4,6 +4,7 @@ import { User } from '../../entities/User';
 import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../config/data-source';
 import { Roles } from '../../constants';
+import { isJwt } from '../utils';
 // import { truncateTables } from '../utils';
 
 describe('POST /auth/register', () => {
@@ -154,23 +155,26 @@ describe('POST /auth/register', () => {
                 .post('/auth/register')
                 .send(userData);
 
-            const cookies = (response.headers['set-cookie'] as string[]) || [];
+            const cookies = response.get('Set-Cookie');
 
             let accessToken: string | undefined;
             let refreshToken: string | undefined;
 
-            cookies.forEach((cookie: string) => {
+            cookies?.forEach((cookie: string) => {
                 if (cookie.startsWith('access-token=')) {
-                    accessToken = cookie.split(';')[0].split('=')[1];
+                    accessToken = cookie?.split(';')[0]?.split('=')[1];
                 }
 
                 if (cookie.startsWith('refresh-token=')) {
-                    refreshToken = cookie.split(';')[0].split('=')[1];
+                    refreshToken = cookie?.split(';')[0]?.split('=')[1];
                 }
             });
 
             expect(accessToken).toBeDefined();
             expect(refreshToken).toBeDefined();
+
+            expect(isJwt(accessToken)).toBeTruthy();
+            expect(isJwt(refreshToken)).toBeTruthy();
         });
     });
 

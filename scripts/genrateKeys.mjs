@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import fs from "fs";
 
-const { privatekey, publicKey } = crypto.generateKeyPairSync("rsa", {
+const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
 	modulusLength: 2048,
 	publicKeyEncoding: {
 		type: 'pkcs1',
@@ -13,8 +13,8 @@ const { privatekey, publicKey } = crypto.generateKeyPairSync("rsa", {
 	}
 })
 
-console.log('privateKye', privatekey)
+console.log('privateKye', privateKey)
 console.log('publickey', publicKey)
 
-fs.writeFileSync('/certs/privateKey.pem', privatekey)
-fs.writeFileSync('/certs/publicKey.pem', publicKey)
+fs.writeFileSync('./certs/privateKey.pem', privateKey)
+fs.writeFileSync('./certs/publicKey.pem', publicKey)

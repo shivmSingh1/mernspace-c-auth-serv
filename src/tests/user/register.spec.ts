@@ -172,6 +172,7 @@ describe('POST /auth/register', () => {
 
             expect(accessToken).toBeDefined();
             expect(refreshToken).toBeDefined();
+            // console.log("access token", accessToken)
 
             expect(isJwt(accessToken)).toBeTruthy();
             expect(isJwt(refreshToken)).toBeTruthy();

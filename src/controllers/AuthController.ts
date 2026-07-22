@@ -5,6 +5,9 @@ import { Logger } from 'winston';
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
 import { validationResult } from 'express-validator';
+import { JwtPayload, sign } from 'jsonwebtoken';
+import fs from 'fs';
+import path from 'path';
 
 export class AuthController {
     // private userService: UserService;
@@ -55,11 +58,36 @@ export class AuthController {
 
             // this.logger.info('user has been registerd', { id: user.id });
 
-            const accessToken =
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzaGl2YW1AZ21haWwuY29tIiwicm9sZSI6IkNVU1RPTUVSIn0.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk';
+            // const accessToken =
+            //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzaGl2YW1AZ21haWwuY29tIiwicm9sZSI6IkNVU1RPTUVSIn0.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk';
 
             const refreshToken =
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidHlwZSI6InJlZnJlc2gifQ.s5cJ7wM2j4k8R1V9N0XxYzAbCdEfGhIjKlMnOpQrStU';
+
+            let privateKey: Buffer;
+            try {
+                privateKey = fs.readFileSync(
+                    path.join(__dirname, '../../certs/privateKey.pem'),
+                );
+            } catch {
+                const err = createHttpError(
+                    500,
+                    'error while reading privateKey',
+                );
+                next(err);
+                return;
+            }
+
+            const payload: JwtPayload = {
+                sub: String(user.id),
+                role: user.role,
+            };
+
+            const accessToken = sign(payload, privateKey, {
+                algorithm: 'RS256',
+                expiresIn: '1h',
+                issuer: 'auth-service',
+            });
 
             res.cookie('access-token', accessToken, {
                 httpOnly: true,

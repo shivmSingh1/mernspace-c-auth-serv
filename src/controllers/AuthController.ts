@@ -8,6 +8,7 @@ import { validationResult } from 'express-validator';
 import { JwtPayload, sign } from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
+import { Config } from '../config';
 
 export class AuthController {
     // private userService: UserService;
@@ -61,8 +62,8 @@ export class AuthController {
             // const accessToken =
             //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzaGl2YW1AZ21haWwuY29tIiwicm9sZSI6IkNVU1RPTUVSIn0.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk';
 
-            const refreshToken =
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidHlwZSI6InJlZnJlc2gifQ.s5cJ7wM2j4k8R1V9N0XxYzAbCdEfGhIjKlMnOpQrStU';
+            // const refreshToken =
+            //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidHlwZSI6InJlZnJlc2gifQ.s5cJ7wM2j4k8R1V9N0XxYzAbCdEfGhIjKlMnOpQrStU';
 
             let privateKey: Buffer;
             try {
@@ -86,6 +87,12 @@ export class AuthController {
             const accessToken = sign(payload, privateKey, {
                 algorithm: 'RS256',
                 expiresIn: '1h',
+                issuer: 'auth-service',
+            });
+
+            const refreshToken = sign(payload, Config.REFRESH_TOKEN_SECRET, {
+                algorithm: 'HS256',
+                expiresIn: '1y',
                 issuer: 'auth-service',
             });
 

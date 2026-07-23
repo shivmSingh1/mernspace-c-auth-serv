@@ -24,4 +24,5 @@ export const Config = {
     DB_USERNAME: getEnv('DB_USERNAME'),
     DB_PASSWORD: getEnv('DB_PASSWORD'),
     DB_NAME: getEnv('DB_NAME'),
+    REFRESH_TOKEN_SECRET: getEnv('REFRESH_TOKEN_SECRET'),
 };

@@ -5,8 +5,7 @@ import { Logger } from 'winston';
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
 import { validationResult } from 'express-validator';
-import { JwtPayload, sign } from 'jsonwebtoken';
-import { Config } from '../config';
+import { JwtPayload } from 'jsonwebtoken';
 import { AppDataSource } from '../config/data-source';
 import { RefreshToken } from '../entities/RefreshToken';
 import { TokenService } from '../services/tokenService';
@@ -73,7 +72,6 @@ export class AuthController {
             };
 
             //persist the refresh token
-
             const MS_IN_Y = 1000 * 60 * 60 * 24 * 365;
 
             const refreshTokenRepo = AppDataSource.getRepository(RefreshToken);
@@ -83,12 +81,9 @@ export class AuthController {
             });
 
             const accessToken = this.tokenService.genrateAccessToken(payload);
-
-            const refreshToken = sign(payload, Config.REFRESH_TOKEN_SECRET, {
-                algorithm: 'HS256',
-                expiresIn: '1y',
-                issuer: 'auth-service',
-                jwtid: String(newRefreshToken.id),
+            const refreshToken = this.tokenService.genrateRefreshToken({
+                ...payload,
+                id: newRefreshToken.id,
             });
 
             res.cookie('access-token', accessToken, {

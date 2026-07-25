@@ -6,15 +6,18 @@ import { User } from '../entities/User';
 import logger from '../config/logger';
 import registerValidator from '../validators/register.validator';
 import { TokenService } from '../services/tokenService';
+import { RefreshToken } from '../entities/RefreshToken';
 const router = express.Router();
 
 //dependency injection
 
 const userRepository = AppDataSource.getRepository(User); //caling getRepository method of AppDataSocure (DataSource) obj
+const refreshTokenRepository = AppDataSource.getRepository(RefreshToken);
 
 //creating obj to services
 const userService = new UserService(userRepository);
-const tokenService = new TokenService();
+const tokenService = new TokenService(refreshTokenRepository);
+
 const authController = new AuthController(userService, logger, tokenService); // injecting dependency (obj) to auth controller
 
 router.post(

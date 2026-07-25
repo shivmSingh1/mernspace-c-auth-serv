@@ -6,8 +6,6 @@ import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
 import { validationResult } from 'express-validator';
 import { JwtPayload } from 'jsonwebtoken';
-import { AppDataSource } from '../config/data-source';
-import { RefreshToken } from '../entities/RefreshToken';
 import { TokenService } from '../services/tokenService';
 
 export class AuthController {
@@ -72,13 +70,8 @@ export class AuthController {
             };
 
             //persist the refresh token
-            const MS_IN_Y = 1000 * 60 * 60 * 24 * 365;
-
-            const refreshTokenRepo = AppDataSource.getRepository(RefreshToken);
-            const newRefreshToken = await refreshTokenRepo.save({
-                user: user,
-                expiresAt: new Date(Date.now() + MS_IN_Y),
-            });
+            const newRefreshToken =
+                await this.tokenService.persistRefreshToken(user);
 
             const accessToken = this.tokenService.genrateAccessToken(payload);
             const refreshToken = this.tokenService.genrateRefreshToken({

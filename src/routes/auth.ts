@@ -7,6 +7,8 @@ import logger from '../config/logger';
 import registerValidator from '../validators/register.validator';
 import { TokenService } from '../services/tokenService';
 import { RefreshToken } from '../entities/RefreshToken';
+import loginValidators from '../validators/login.validators';
+import { CredentialService } from '../services/CredentialService';
 const router = express.Router();
 
 //dependency injection
@@ -17,14 +19,28 @@ const refreshTokenRepository = AppDataSource.getRepository(RefreshToken);
 //creating obj to services
 const userService = new UserService(userRepository);
 const tokenService = new TokenService(refreshTokenRepository);
+const credentialService = new CredentialService();
 
-const authController = new AuthController(userService, logger, tokenService); // injecting dependency (obj) to auth controller
+const authController = new AuthController(
+    userService,
+    logger,
+    tokenService,
+    credentialService,
+); // injecting dependency (obj) to auth controller
 
 router.post(
     '/register',
     registerValidator,
     async (req: Request, res: Response, next: NextFunction) => {
         await authController.register(req, res, next);
+    },
+);
+
+router.post(
+    '/login',
+    loginValidators,
+    async (req: Request, res: Response, next: NextFunction) => {
+        await authController.login(req, res, next);
     },
 );
 

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import express, {
     type NextFunction,
     type Request,
@@ -5,7 +6,6 @@ import express, {
 } from 'express';
 import type { HttpError } from 'http-errors';
 import router from './routes/auth';
-import 'reflect-metadata';
 import logger from './config/logger';
 // import createHttpError from 'http-errors';
 

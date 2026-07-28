@@ -7,6 +7,7 @@ import createHttpError from 'http-errors';
 import { validationResult } from 'express-validator';
 import { JwtPayload } from 'jsonwebtoken';
 import { TokenService } from '../services/tokenService';
+import { CredentialService } from '../services/CredentialService';
 
 export class AuthController {
     // private userService: UserService;
@@ -18,6 +19,7 @@ export class AuthController {
         private userService: UserService,
         private logger: Logger,
         private tokenService: TokenService,
+        private credentialService: CredentialService,
     ) {}
 
     async register(
@@ -92,6 +94,92 @@ export class AuthController {
                 domain: 'localhost',
                 maxAge: 1000 * 60 * 60 * 24 * 360,
             });
+
+            res.status(201).json({
+                id: user?.id,
+            });
+        } catch (error) {
+            next(error);
+            return;
+        }
+    }
+
+    async login(req: RegisterUserInterface, res: Response, next: NextFunction) {
+        const { email, password } = req.body;
+
+        this.logger.debug('new request to logged in a user', {
+            email,
+            password: '******',
+        });
+
+        //validation
+        const result = validationResult(req);
+
+        if (!result.isEmpty()) {
+            throw createHttpError(400, {
+                message: result.array().map((err) => String(err.msg)),
+                errors: result.array(),
+            });
+        }
+
+        let user;
+        try {
+            user = await this.userService.findByEmail(email);
+
+            if (!user) {
+                const err = createHttpError(
+                    400,
+                    'Email or Password is incorrect',
+                );
+                next(err);
+                return;
+            }
+
+            const isPasswordMatched =
+                await this.credentialService.comparePassword(
+                    password,
+                    user.password,
+                );
+
+            if (!isPasswordMatched) {
+                const err = createHttpError(
+                    400,
+                    'Email or Password is incorrect',
+                );
+                next(err);
+                return;
+            }
+
+            const payload: JwtPayload = {
+                sub: String(user.id),
+                role: user.role,
+            };
+
+            //persist the refresh token
+            const newRefreshToken =
+                await this.tokenService.persistRefreshToken(user);
+
+            const accessToken = this.tokenService.genrateAccessToken(payload);
+            const refreshToken = this.tokenService.genrateRefreshToken({
+                ...payload,
+                id: newRefreshToken.id,
+            });
+
+            res.cookie('access-token', accessToken, {
+                httpOnly: true,
+                secure: false,
+                domain: 'localhost',
+                maxAge: 1000 * 60 * 60,
+            });
+
+            res.cookie('refresh-token', refreshToken, {
+                httpOnly: true,
+                secure: false,
+                domain: 'localhost',
+                maxAge: 1000 * 60 * 60 * 24 * 360,
+            });
+
+            this.logger.info('user logged in successfully', { id: user.id });
 
             res.status(201).json({
                 id: user?.id,

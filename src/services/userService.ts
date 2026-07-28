@@ -45,4 +45,14 @@ export class UserService {
             throw error;
         }
     }
+
+    async findByEmail(email: string) {
+        try {
+            const user = this.userRepository.findOne({ where: { email } });
+            return user;
+        } catch {
+            const err = createHttpError(500, 'something went wrong');
+            throw err;
+        }
+    }
 }

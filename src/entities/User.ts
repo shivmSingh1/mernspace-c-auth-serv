@@ -21,6 +21,3 @@ export class User {
     @Column({ type: 'varchar' })
     role: string;
 }
-
-console.log('shivam');
-console.log(Reflect.getMetadata('design:type', User.prototype, 'firstName'));

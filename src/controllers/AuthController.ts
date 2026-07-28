@@ -189,4 +189,8 @@ export class AuthController {
             return;
         }
     }
+
+    self(req: RegisterUserInterface, res: Response) {
+        res.json();
+    }
 }

@@ -1,7 +1,9 @@
 import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../config/data-source';
+import request from 'supertest';
+import app from '../../app';
 
-describe('POST /auth/login', () => {
+describe('GET /auth/self', () => {
     let connection: DataSource;
 
     beforeAll(async () => {
@@ -26,9 +28,9 @@ describe('POST /auth/login', () => {
     });
 
     describe('given all fields', () => {
-        it.todo('should return access and refresh token in cookie');
-        it.todo(
-            'shoud return 400 status code if email or password is incorrect',
-        );
+        it('should return 200 status code', async () => {
+            const response = await request(app).get('/auth/self').send();
+            expect(response.statusCode).toBe(200);
+        });
     });
 });

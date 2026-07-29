@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { RegisterUserInterface } from '../types';
+import { AuthRequest, RegisterUserInterface } from '../types';
 import { UserService } from '../services/userService';
 import { Logger } from 'winston';
 import bcrypt from 'bcrypt';
@@ -81,14 +81,14 @@ export class AuthController {
                 id: newRefreshToken.id,
             });
 
-            res.cookie('access-token', accessToken, {
+            res.cookie('accessToken', accessToken, {
                 httpOnly: true,
                 secure: false,
                 domain: 'localhost',
                 maxAge: 1000 * 60 * 60,
             });
 
-            res.cookie('refresh-token', refreshToken, {
+            res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
                 secure: false,
                 domain: 'localhost',
@@ -165,14 +165,14 @@ export class AuthController {
                 id: newRefreshToken.id,
             });
 
-            res.cookie('access-token', accessToken, {
+            res.cookie('accessToken', accessToken, {
                 httpOnly: true,
                 secure: false,
                 domain: 'localhost',
                 maxAge: 1000 * 60 * 60,
             });
 
-            res.cookie('refresh-token', refreshToken, {
+            res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
                 secure: false,
                 domain: 'localhost',
@@ -190,7 +190,26 @@ export class AuthController {
         }
     }
 
-    self(req: RegisterUserInterface, res: Response) {
-        res.json();
+    async self(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            const user = await this.userService.findById(Number(req.auth.sub));
+
+            if (!user) {
+                return res.status(200).json({
+                    id: Number(req.auth.sub),
+                    role: req.auth.role,
+                });
+            }
+
+            res.json({
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                role: user.role,
+            });
+        } catch (err) {
+            next(err);
+        }
     }
 }

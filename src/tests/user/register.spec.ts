@@ -162,11 +162,11 @@ describe('POST /auth/register', () => {
             let refreshToken: string | undefined;
 
             cookies?.forEach((cookie: string) => {
-                if (cookie.startsWith('access-token=')) {
+                if (cookie.startsWith('accessToken=')) {
                     accessToken = cookie?.split(';')[0]?.split('=')[1];
                 }
 
-                if (cookie.startsWith('refresh-token=')) {
+                if (cookie.startsWith('refreshToken=')) {
                     refreshToken = cookie?.split(';')[0]?.split('=')[1];
                 }
             });

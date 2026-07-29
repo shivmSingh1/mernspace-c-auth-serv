@@ -1,4 +1,9 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, {
+    NextFunction,
+    Request,
+    RequestHandler,
+    Response,
+} from 'express';
 import { AuthController } from '../controllers/AuthController';
 import { UserService } from '../services/userService';
 import { AppDataSource } from '../config/data-source';
@@ -9,6 +14,8 @@ import { TokenService } from '../services/tokenService';
 import { RefreshToken } from '../entities/RefreshToken';
 import loginValidators from '../validators/login.validators';
 import { CredentialService } from '../services/CredentialService';
+import authenticate from '../middlewares/authenticate';
+import { AuthRequest } from '../types';
 const router = express.Router();
 
 //dependency injection
@@ -44,8 +51,11 @@ router.post(
     },
 );
 
-router.get('/self', (req: Request, res: Response) =>
-    authController.self(req, res),
+router.get(
+    '/self',
+    authenticate as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) =>
+        authController.self(req as AuthRequest, res, next),
 );
 
 export default router;

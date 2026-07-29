@@ -48,7 +48,19 @@ export class UserService {
 
     async findByEmail(email: string) {
         try {
-            const user = this.userRepository.findOne({ where: { email } });
+            const user = await this.userRepository.findOne({
+                where: { email },
+            });
+            return user;
+        } catch {
+            const err = createHttpError(500, 'something went wrong');
+            throw err;
+        }
+    }
+
+    async findById(id: number) {
+        try {
+            const user = await this.userRepository.findOne({ where: { id } });
             return user;
         } catch {
             const err = createHttpError(500, 'something went wrong');

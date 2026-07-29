@@ -7,6 +7,7 @@ import express, {
 import type { HttpError } from 'http-errors';
 import router from './routes/auth';
 import logger from './config/logger';
+import cookieParser from 'cookie-parser';
 // import createHttpError from 'http-errors';
 
 const app = express();
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
     res.send('Auth service is working');
 });
 
+app.use(cookieParser());
 app.use(express.json());
 app.use('/auth', router);
 

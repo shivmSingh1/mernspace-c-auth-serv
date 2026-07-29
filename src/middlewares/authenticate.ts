@@ -1,15 +1,28 @@
+import fs from 'fs';
+import path from 'path';
 import { expressjwt } from 'express-jwt';
-import * as jwksClient from 'jwks-rsa';
-import { Config } from '../config';
 import { Request, RequestHandler } from 'express';
 import { decode, JwtPayload } from 'jsonwebtoken';
 import createHttpError from 'http-errors';
-import { AuthRequest } from '../types';
+import { authCookie, AuthRequest } from '../types';
 
 type AuthTokenPayload = JwtPayload & {
     sub: string;
     role: string;
 };
+
+const publicKeyPath = path.join(__dirname, '../../certs/publicKey.pem');
+let publicKey: string;
+try {
+    publicKey = fs.readFileSync(publicKeyPath, 'utf8');
+} catch {
+    // throw new Error(`Unable to load public key from ${publicKeyPath}: ${error}`);
+    const err = createHttpError(
+        500,
+        `Unable to load public key from ${publicKeyPath}`,
+    );
+    throw err;
+}
 
 const getToken = (req: Request) => {
     const authHeader = req.headers.authorization;
@@ -22,12 +35,8 @@ const getToken = (req: Request) => {
         }
     }
 
-    type authCookie = {
-        accessToken: string;
-    };
-
     const { accessToken } = req.cookies as authCookie;
-    console.log('cookie token', accessToken);
+    // console.log('cookie token', accessToken);
     return accessToken;
 };
 
@@ -52,11 +61,7 @@ const testAuthenticate: RequestHandler = (req, res, next) => {
 };
 
 const productionAuthenticate = expressjwt({
-    secret: jwksClient.expressJwtSecret({
-        jwksUri: Config.JWKS_URI,
-        rateLimit: true,
-        cache: true,
-    }),
+    secret: () => publicKey,
     algorithms: ['RS256'],
     getToken,
 });

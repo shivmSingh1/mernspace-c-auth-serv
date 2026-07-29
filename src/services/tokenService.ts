@@ -14,7 +14,7 @@ export class TokenService {
         this.refreshTokenRepo = refreshTokenRepo;
     }
 
-    genrateAccessToken(payload: JwtPayload) {
+    generateAccessToken(payload: JwtPayload) {
         let privateKey: Buffer;
         try {
             privateKey = fs.readFileSync(
@@ -34,7 +34,7 @@ export class TokenService {
         return accessToken;
     }
 
-    genrateRefreshToken(payload: JwtPayload) {
+    generateRefreshToken(payload: JwtPayload) {
         const refreshToken = sign(payload, Config.REFRESH_TOKEN_SECRET, {
             algorithm: 'HS256',
             expiresIn: '1y',
@@ -46,12 +46,15 @@ export class TokenService {
 
     async persistRefreshToken(user: User) {
         const MS_IN_Y = 1000 * 60 * 60 * 24 * 365;
-        // const refreshTokenRepo = AppDataSource.getRepository(RefreshToken);
         const newRefreshToken = await this.refreshTokenRepo.save({
             user: user,
             expiresAt: new Date(Date.now() + MS_IN_Y),
         });
 
         return newRefreshToken;
+    }
+
+    async deleteRefreshToken(id: number) {
+        await this.refreshTokenRepo.delete({ id });
     }
 }

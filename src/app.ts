@@ -18,6 +18,7 @@ app.get('/', (req, res) => {
     res.send('Auth service is working');
 });
 
+app.use(express.static('public'));
 app.use(cookieParser());
 app.use(express.json());
 app.use('/auth', router);

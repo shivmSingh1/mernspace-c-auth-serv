@@ -8,6 +8,7 @@ import type { HttpError } from 'http-errors';
 import router from './routes/auth';
 import logger from './config/logger';
 import cookieParser from 'cookie-parser';
+import tenantRouter from './routes/tenant';
 // import createHttpError from 'http-errors';
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(express.static('public'));
 app.use(cookieParser());
 app.use(express.json());
 app.use('/auth', router);
+app.use('/tenant', tenantRouter);
 
 //global error handler
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {

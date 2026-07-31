@@ -31,3 +31,12 @@ export type authCookie = {
 export type IRefreshTokenPayload = {
     id: string;
 };
+
+export type TenantData = {
+    name: string;
+    address: string;
+};
+
+export interface ITenantRequest extends Request {
+    body: TenantData;
+}

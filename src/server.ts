@@ -1,8 +1,8 @@
 import 'reflect-metadata';
-import app from './app.js';
-import { AppDataSource } from './config/data-source.js';
-import { Config } from './config/index.js';
-import logger from './config/logger.js';
+import app from './app';
+import { AppDataSource } from './config/data-source';
+import { Config } from './config/index';
+import logger from './config/logger';
 
 const startServer = async () => {
     const PORT = Config.PORT;

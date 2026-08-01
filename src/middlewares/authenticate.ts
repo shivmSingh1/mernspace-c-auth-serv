@@ -12,16 +12,18 @@ type AuthTokenPayload = JwtPayload & {
 };
 
 const publicKeyPath = path.join(__dirname, '../../certs/publicKey.pem');
-let publicKey: string;
-try {
-    publicKey = fs.readFileSync(publicKeyPath, 'utf8');
-} catch {
-    // throw new Error(`Unable to load public key from ${publicKeyPath}: ${error}`);
-    const err = createHttpError(
-        500,
-        `Unable to load public key from ${publicKeyPath}`,
-    );
-    throw err;
+let publicKey = process.env.PUBLIC_KEY || '';
+
+if (!publicKey && process.env.NODE_ENV !== 'test') {
+    try {
+        publicKey = fs.readFileSync(publicKeyPath, 'utf8');
+    } catch {
+        const err = createHttpError(
+            500,
+            `Unable to load public key from ${publicKeyPath}`,
+        );
+        throw err;
+    }
 }
 
 const getToken = (req: Request) => {

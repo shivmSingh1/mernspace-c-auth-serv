@@ -1,5 +1,7 @@
 import createHttpError from 'http-errors';
 import { JwtPayload, sign } from 'jsonwebtoken';
+import fs from 'node:fs';
+import path from 'node:path';
 import { Config } from '../config';
 import { User } from '../entities/User';
 import { Repository } from 'typeorm';
@@ -15,15 +17,16 @@ export class TokenService {
     }
 
     generateAccessToken(payload: JwtPayload) {
-        let privateKey: string;
+        let privateKey = Config.PRIVATE_KEY;
 
-        if (!Config.PRIVATE_KEY) {
-            throw createHttpError(500, 'error while reading privateKey');
+        if (!privateKey) {
+            const pemPath = path.join(__dirname, '../../certs/privateKey.pem');
+            if (fs.existsSync(pemPath)) {
+                privateKey = fs.readFileSync(pemPath, 'utf8');
+            }
         }
 
-        try {
-            privateKey = Config.PRIVATE_KEY;
-        } catch {
+        if (!privateKey) {
             throw createHttpError(500, 'error while reading privateKey');
         }
 

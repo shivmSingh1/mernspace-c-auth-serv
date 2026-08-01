@@ -49,7 +49,7 @@
       "experimentalResolver": true
    },
    "exclude": [
-      "**/*.spec.ts",
-      "tests"
+      "dist",
+      "node_modules"
    ]
 }

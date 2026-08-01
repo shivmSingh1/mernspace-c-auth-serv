@@ -2,7 +2,6 @@ import { Brackets, Repository } from 'typeorm';
 import { User } from '../entities/User';
 import { LimitedUserData, UserData, UserQueryParams } from '../types';
 import createHttpError from 'http-errors';
-import bcrypt from 'bcrypt';
 import { Roles } from '../constants';
 
 export class UserService {
@@ -29,15 +28,13 @@ export class UserService {
             const err = createHttpError(400, 'Email is already exists!');
             throw err;
         }
-        // Hash the password
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
         try {
             const userToCreate: Partial<User> = {
                 firstName,
                 lastName,
                 email,
-                password: hashedPassword,
+                password,
                 role: role ?? Roles.CUSTOMER,
             };
 
@@ -78,7 +75,7 @@ export class UserService {
     // }
 
     async findByEmailWithPassword(email: string) {
-        return await this.userRepository.findOne({
+        const user = await this.userRepository.findOne({
             where: {
                 email,
             },
@@ -94,6 +91,7 @@ export class UserService {
                 tenant: true,
             },
         });
+        return user;
     }
 
     async findById(id: number) {

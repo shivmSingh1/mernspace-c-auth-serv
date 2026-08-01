@@ -1,11 +1,11 @@
-import fs from 'fs';
 import createHttpError from 'http-errors';
 import { JwtPayload, sign } from 'jsonwebtoken';
-import path from 'path';
 import { Config } from '../config';
 import { User } from '../entities/User';
 import { Repository } from 'typeorm';
 import { RefreshToken } from '../entities/RefreshToken';
+import dotenv from 'dotenv';
+dotenv.config({});
 
 export class TokenService {
     refreshTokenRepo: Repository<RefreshToken>;
@@ -15,14 +15,16 @@ export class TokenService {
     }
 
     generateAccessToken(payload: JwtPayload) {
-        let privateKey: Buffer;
+        let privateKey: string;
+
+        if (!Config.PRIVATE_KEY) {
+            throw createHttpError(500, 'error while reading privateKey');
+        }
+
         try {
-            privateKey = fs.readFileSync(
-                path.join(__dirname, '../../certs/privateKey.pem'),
-            );
+            privateKey = Config.PRIVATE_KEY;
         } catch {
-            const err = createHttpError(500, 'error while reading privateKey');
-            throw err;
+            throw createHttpError(500, 'error while reading privateKey');
         }
 
         const accessToken = sign(payload, privateKey, {

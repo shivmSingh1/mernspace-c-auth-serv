@@ -26,7 +26,8 @@ export const Config = {
     DB_NAME: getEnv('DB_NAME'),
     REFRESH_TOKEN_SECRET: getEnv('REFRESH_TOKEN_SECRET'),
     JWKS_URI: getEnv('JWKS_URI'),
-    CLIENT_UI_DOMAIN: getEnv('CLIENT_UI_DOMAIN'),
-    ADMIN_UI_DOMAIN: getEnv('ADMIN_UI_DOMAIN'),
-    MAIN_DOMAIN: getEnv('MAIN_DOMAIN'),
+    // CLIENT_UI_DOMAIN: getEnv('CLIENT_UI_DOMAIN'),
+    // ADMIN_UI_DOMAIN: getEnv('ADMIN_UI_DOMAIN'),
+    // MAIN_DOMAIN: getEnv('MAIN_DOMAIN'),
+    PRIVATE_KEY: getEnv('PRIVATE_KEY'),
 };

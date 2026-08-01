@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 import { AuthRequest, RegisterUserRequest } from '../types';
 import { UserService } from '../services/userService';
 import { Logger } from 'winston';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import createHttpError from 'http-errors';
 import { validationResult } from 'express-validator';
 import { JwtPayload } from 'jsonwebtoken';
@@ -134,6 +134,8 @@ export class AuthController {
                 password,
                 user.password,
             );
+
+            console.log('password match', passwordMatch);
 
             if (!passwordMatch) {
                 const error = createHttpError(

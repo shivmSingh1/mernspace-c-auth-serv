@@ -9,6 +9,7 @@ const startServer = async () => {
     try {
         await AppDataSource.initialize();
         logger.info('database connected successfully');
+        logger.info(Config.DB_NAME);
         app.listen(PORT, () => {
             // logger.error('testing error log');
             logger.info('server is running.', { PORT });

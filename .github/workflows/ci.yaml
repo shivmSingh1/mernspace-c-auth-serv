@@ -10,8 +10,9 @@ jobs:
     build-and-test:
         name: Build the project
         runs-on: ubuntu-latest
+        # if: github.event_name == 'pull_request'
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v3
             - name: Install dependencies
               run: npm ci
             - name: Run eslint
@@ -19,37 +20,28 @@ jobs:
             - name: Test and coverage
               run: npm run test
               env:
-                  NODE_ENV: test
-                  PORT: ${{ secrets.APP_PORT }}
-                  DB_HOST: ${{ secrets.SUPABASE_DB_HOST || secrets.TEST_DB_HOST || secrets.DB_HOST }}
-                  DB_PORT: ${{ secrets.SUPABASE_DB_PORT || secrets.TEST_DB_PORT || secrets.DB_PORT }}
-                  DB_USERNAME: ${{ secrets.SUPABASE_DB_USERNAME || secrets.TEST_DB_USERNAME || secrets.DB_USERNAME }}
-                  DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD || secrets.TEST_DB_PASSWORD || secrets.DB_PASSWORD }}
-                  DB_NAME: ${{ secrets.SUPABASE_DB_NAME || secrets.TEST_DB_NAME || secrets.DB_NAME }}
-                  DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL || secrets.DATABASE_URL }}
-                  DB_SSL: ${{ secrets.SUPABASE_DB_SSL || secrets.DB_SSL || 'true' }}
+                  DB_HOST: ${{ secrets.TEST_DB_HOST }}
+                  DB_PORT: ${{ secrets.TEST_DB_PORT }}
+                  DB_USERNAME: ${{ secrets.TEST_DB_USERNAME }}
+                  DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+                  DB_NAME: ${{ secrets.TEST_DB_NAME }}
                   REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
                   JWKS_URI: ${{ secrets.JWKS_URI }}
                   PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-                  PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
             - name: Build-ts
               run: npm run build
             - name: SonarCloud Scan
-              if: ${{ env.SONAR_TOKEN != '' }}
-              uses: SonarSource/sonarqube-scan-action@v5
+              uses: SonarSource/sonarcloud-github-action@master
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-                  SONAR_HOST_URL: https://sonarcloud.io
-                  SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-                  SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
 
     build-and-push-docker:
         name: Build and Push Docker Image
         needs: build-and-test
         runs-on: ubuntu-latest
         env:
-            IMAGE_NAME: dockershivm/mernspace-c-auth-service # dockershivm/mernstack_auth_service:build-2
+            IMAGE_NAME: dockershivm/mernspace-c-auth-service # codersgyan/mernstack_auth_service:build-2
             IMAGE_TAG: build-${{ github.run_number }}
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         steps:
@@ -61,6 +53,6 @@ jobs:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_PASSWORD }}
             - name: Build Docker image
-              run: docker build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --platform linux/amd64 -f Docker/prod/Dockerfile .
+              run: docker build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --platform linux/amd64 -f docker/prod/Dockerfile .
             - name: Push Docker image to Docker Hub
               run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}

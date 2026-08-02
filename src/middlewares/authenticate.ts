@@ -25,7 +25,7 @@ if (!publicKey && process.env.NODE_ENV !== 'test') {
         throw err;
     }
 }
-
+//comment
 const getToken = (req: Request) => {
     const authHeader = req.headers.authorization;
 

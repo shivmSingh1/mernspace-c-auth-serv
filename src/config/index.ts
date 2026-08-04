@@ -4,7 +4,7 @@ dotenv.config({
     path: path.join(__dirname, `../../.env.${process.env.NODE_ENV || 'dev'}`),
 });
 
-function getEnv(name: string, fallbackName?: string): string {
+export function getEnv(name: string, fallbackName?: string): string {
     const value =
         process.env[name] || (fallbackName ? process.env[fallbackName] : '');
 

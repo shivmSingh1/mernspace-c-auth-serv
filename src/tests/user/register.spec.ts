@@ -7,8 +7,6 @@ import { Roles } from '../../constants';
 import { isJwt } from '../utils';
 import { RefreshToken } from '../../entities/RefreshToken';
 import bcrypt from 'bcryptjs';
-import { UserData } from '../../types';
-// import { truncateTables } from '../utils';
 
 describe('POST /auth/register', () => {
     let connection: DataSource;
@@ -339,73 +337,6 @@ describe('POST /auth/register', () => {
             });
 
             expect(response.status).toBe(200);
-        });
-
-        it.skip('should return user id', async () => {
-            const password = 'secret1234';
-
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            const repo = connection.getRepository(User);
-
-            const user = await repo.save({
-                firstName: 'shivam',
-                lastName: 'singh',
-                email: 'shivam@gmail.com',
-                password: hashedPassword,
-                role: Roles.CUSTOMER,
-            } as UserData);
-
-            await request(app).post('/auth/login').send({
-                email: user.email,
-                password,
-            });
-
-            // expect(response.body.id).toEqual({
-            //     id: user.id,
-            // });
-        });
-
-        it.skip('should return access token and refresh token cookies', async () => {
-            const password = 'secret1234';
-
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            const repo = connection.getRepository(User);
-
-            await repo.save({
-                firstName: 'shivam',
-                lastName: 'singh',
-                email: 'shivam@gmail.com',
-                password: hashedPassword,
-                role: Roles.CUSTOMER,
-            });
-
-            const response = await request(app).post('/auth/login').send({
-                email: 'shivam@gmail.com',
-                password,
-            });
-
-            const cookies = response.get('Set-Cookie');
-
-            let accessToken: string | undefined;
-            let refreshToken: string | undefined;
-
-            cookies?.forEach((cookie) => {
-                if (cookie.startsWith('accessToken=')) {
-                    accessToken = cookie.split(';')[0]?.split('=')[1];
-                }
-
-                if (cookie.startsWith('refreshToken=')) {
-                    refreshToken = cookie.split(';')[0]?.split('=')[1];
-                }
-            });
-
-            expect(accessToken).toBeDefined();
-            expect(refreshToken).toBeDefined();
-
-            expect(isJwt(accessToken)).toBeTruthy();
-            expect(isJwt(refreshToken)).toBeTruthy();
         });
 
         it('should persist refresh token', async () => {

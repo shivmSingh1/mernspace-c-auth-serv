@@ -6,6 +6,8 @@ import { AppDataSource } from '../../config/data-source';
 import { Roles } from '../../constants';
 import { isJwt } from '../utils';
 import { RefreshToken } from '../../entities/RefreshToken';
+import bcrypt from 'bcryptjs';
+import { UserData } from '../../types';
 // import { truncateTables } from '../utils';
 
 describe('POST /auth/register', () => {
@@ -312,6 +314,183 @@ describe('POST /auth/register', () => {
                 .send(userData);
 
             expect(response.statusCode).toBe(400);
+        });
+    });
+
+    describe('given valid credentials', () => {
+        it('should return 200 status code', async () => {
+            const userData = {
+                firstName: 'shivam',
+                lastName: 'singh',
+                email: 'shivam@gmail.com',
+                password: 'secret1234',
+                role: Roles.CUSTOMER,
+            };
+
+            const repo = connection.getRepository(User);
+
+            await repo.save(userData);
+
+            const response = await request(app).post('/auth/login').send({
+                email: userData.email,
+                password: userData.password,
+            });
+
+            expect(response.status).toBe(200);
+        });
+    });
+
+    describe('given valid credentials', () => {
+        it('should return 200 status code', async () => {
+            const password = 'secret1234';
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            const repo = connection.getRepository(User);
+
+            await repo.save({
+                firstName: 'shivam',
+                lastName: 'singh',
+                email: 'shivam@gmail.com',
+                password: hashedPassword,
+                role: Roles.CUSTOMER,
+            });
+
+            const response = await request(app).post('/auth/login').send({
+                email: 'shivam@gmail.com',
+                password,
+            });
+
+            expect(response.status).toBe(200);
+        });
+
+        it('should return user id', async () => {
+            const password = 'secret1234';
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            const repo = connection.getRepository(User);
+
+            const user = await repo.save({
+                firstName: 'shivam',
+                lastName: 'singh',
+                email: 'shivam@gmail.com',
+                password: hashedPassword,
+                role: Roles.CUSTOMER,
+            } as UserData);
+
+            const response = await request(app).post('/auth/login').send({
+                email: user.email,
+                password,
+            });
+
+            expect(response.body).toBe(user);
+        });
+
+        it('should return access token and refresh token cookies', async () => {
+            const password = 'secret1234';
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            const repo = connection.getRepository(User);
+
+            await repo.save({
+                firstName: 'shivam',
+                lastName: 'singh',
+                email: 'shivam@gmail.com',
+                password: hashedPassword,
+                role: Roles.CUSTOMER,
+            });
+
+            const response = await request(app).post('/auth/login').send({
+                email: 'shivam@gmail.com',
+                password,
+            });
+
+            const cookies = response.get('Set-Cookie');
+
+            let accessToken: string | undefined;
+            let refreshToken: string | undefined;
+
+            cookies?.forEach((cookie) => {
+                if (cookie.startsWith('accessToken=')) {
+                    accessToken = cookie.split(';')[0]?.split('=')[1];
+                }
+
+                if (cookie.startsWith('refreshToken=')) {
+                    refreshToken = cookie.split(';')[0]?.split('=')[1];
+                }
+            });
+
+            expect(accessToken).toBeDefined();
+            expect(refreshToken).toBeDefined();
+
+            expect(isJwt(accessToken)).toBeTruthy();
+            expect(isJwt(refreshToken)).toBeTruthy();
+        });
+
+        it('should persist refresh token', async () => {
+            const password = 'secret1234';
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            const repo = connection.getRepository(User);
+
+            const user = await repo.save({
+                firstName: 'shivam',
+                lastName: 'singh',
+                email: 'shivam@gmail.com',
+                password: hashedPassword,
+                role: Roles.CUSTOMER,
+            });
+
+            await request(app).post('/auth/login').send({
+                email: user.email,
+                password,
+            });
+
+            const refreshRepo = connection.getRepository(RefreshToken);
+
+            const tokens = await refreshRepo
+                .createQueryBuilder('refreshToken')
+                .where('refreshToken.userId = :id', {
+                    id: user.id,
+                })
+                .getMany();
+
+            expect(tokens).toHaveLength(1);
+        });
+    });
+
+    describe('invalid credentials', () => {
+        it('should return 400 if email is incorrect', async () => {
+            const response = await request(app).post('/auth/login').send({
+                email: 'wrong@gmail.com',
+                password: 'secret1234',
+            });
+
+            expect(response.status).toBe(400);
+        });
+
+        it('should return 400 if password is incorrect', async () => {
+            const hashedPassword = await bcrypt.hash('secret1234', 10);
+
+            const repo = connection.getRepository(User);
+
+            await repo.save({
+                firstName: 'shivam',
+                lastName: 'singh',
+                email: 'shivam@gmail.com',
+                password: hashedPassword,
+                role: Roles.CUSTOMER,
+            });
+
+            const response = await request(app).post('/auth/login').send({
+                email: 'shivam@gmail.com',
+                password: 'wrongpassword',
+            });
+
+            expect(response.status).toBe(400);
         });
     });
 });

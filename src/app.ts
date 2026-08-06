@@ -9,6 +9,7 @@ import router from './routes/auth';
 import logger from './config/logger';
 import cookieParser from 'cookie-parser';
 import tenantRouter from './routes/tenant';
+import cors from 'cors';
 // import createHttpError from 'http-errors';
 
 const app = express();
@@ -19,6 +20,12 @@ app.get('/', (req, res) => {
     res.send('Auth service is working');
 });
 
+app.use(
+    cors({
+        origin: 'http://localhost:5173',
+        credentials: true,
+    }),
+);
 app.use(express.static('public'));
 app.use(cookieParser());
 app.use(express.json());

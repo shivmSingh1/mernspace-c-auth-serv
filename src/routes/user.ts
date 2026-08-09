@@ -13,13 +13,13 @@ import createUserValidator from '../validators/createUserValidator';
 import updateUserValidator from '../validators/updateUserValidator';
 import listUserValidators from '../validators/list-user-validators';
 
-const router = express.Router();
+const userRouter = express.Router();
 
 const userRepository = AppDataSource.getRepository(User);
 const userService = new UserService(userRepository);
 const userController = new UserController(userService, logger);
 
-router.post(
+userRouter.post(
     '/',
     authenticate as RequestHandler,
     canAccess([Roles.ADMIN]),
@@ -28,7 +28,7 @@ router.post(
         userController.create(req, res, next) as unknown as RequestHandler,
 );
 
-router.patch(
+userRouter.patch(
     '/:id',
     authenticate as RequestHandler,
     canAccess([Roles.ADMIN]),
@@ -37,7 +37,7 @@ router.patch(
         userController.update(req, res, next) as unknown as RequestHandler,
 );
 
-router.get(
+userRouter.get(
     '/',
     authenticate as RequestHandler,
     canAccess([Roles.ADMIN]),
@@ -46,7 +46,7 @@ router.get(
         userController.getAll(req, res, next) as unknown as RequestHandler,
 );
 
-router.get(
+userRouter.get(
     '/:id',
     authenticate as RequestHandler,
     canAccess([Roles.ADMIN]),
@@ -54,7 +54,7 @@ router.get(
         userController.getOne(req, res, next) as unknown as RequestHandler,
 );
 
-router.delete(
+userRouter.delete(
     '/:id',
     authenticate as RequestHandler,
     canAccess([Roles.ADMIN]),
@@ -62,4 +62,4 @@ router.delete(
         userController.destroy(req, res, next) as unknown as RequestHandler,
 );
 
-export default router;
+export default userRouter;

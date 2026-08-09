@@ -62,8 +62,7 @@ router.get(
 
 router.post(
     '/refresh',
-    authenticate as RequestHandler,
-    validateRefreshToken,
+    validateRefreshToken as RequestHandler,
     (req: Request, res: Response, next: NextFunction) =>
         authController.refresh(req as AuthRequest, res, next),
 );

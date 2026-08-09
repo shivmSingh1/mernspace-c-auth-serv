@@ -71,6 +71,12 @@ export class AuthController {
             const payload: JwtPayload = {
                 sub: String(user.id),
                 role: user.role,
+                // add tenant id to the payload
+                tenant: user.tenant ? String(user.tenant.id) : '',
+
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
             };
 
             //persist the refresh token
@@ -205,6 +211,7 @@ export class AuthController {
                 lastName: user.lastName,
                 email: user.email,
                 role: user.role,
+                tenant: user.tenant,
             });
         } catch (err) {
             next(err);

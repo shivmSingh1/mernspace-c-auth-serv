@@ -34,3 +34,41 @@ export default expressjwt({
         return true;
     },
 });
+
+/*
+
+Request
+   │
+   ▼
+getToken()
+   │
+   ├── Token nahi mila
+   │       │
+   │       ▼
+   │   401 Unauthorized
+   │   ("No authorization token was found")
+   │
+   └── Token mil gaya
+           │
+           ▼
+     JWT Verify
+           │
+           ├── Invalid / Expired
+           │       │
+           │       ▼
+           │   401 Unauthorized
+           │
+           └── Valid
+                   │
+                   ▼
+             isRevoked()
+                   │
+                   ├── true
+                   │      ▼
+                   │   401 Unauthorized
+                   │
+                   └── false
+                          ▼
+                     Controller 
+                     
+                     */

@@ -19,34 +19,21 @@ export class UserController {
     async create(req: CreateUserRequest, res: Response, next: NextFunction) {
         // Validation
         const result = validationResult(req);
-        const errors = result.array();
         if (!result.isEmpty()) {
-            return next(createHttpError(400, errors[0]?.msg as string));
+            return next(createHttpError(400, result.array()[0]?.msg as string));
         }
 
-        const body = req.body;
-        if (!body || typeof body !== 'object') {
-            return next(createHttpError(400, 'Invalid request payload.'));
-        }
         const { firstName, lastName, email, password, tenantId, role } =
-            body as {
-                firstName: string;
-                lastName: string;
-                email: string;
-                password: string;
-                tenantId?: number;
-                role: string;
-            };
-        const payload = {
-            firstName,
-            lastName,
-            email,
-            password,
-            role,
-            tenantId: tenantId ?? undefined,
-        };
+            req.body;
         try {
-            const user = await this.userService.create(payload);
+            const user = await this.userService.create({
+                firstName,
+                lastName,
+                email,
+                password,
+                role,
+                tenantId,
+            });
             res.status(201).json({ id: user.id });
         } catch (err) {
             next(err);

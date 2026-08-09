@@ -2,7 +2,7 @@ import { Brackets, Repository } from 'typeorm';
 import { User } from '../entities/User';
 import { LimitedUserData, UserData, UserQueryParams } from '../types';
 import createHttpError from 'http-errors';
-import { Roles } from '../constants';
+import bcrypt from 'bcryptjs';
 
 export class UserService {
     // constructor(private userRepository: Repository<User>) {} //shortcut method of typscript
@@ -20,7 +20,7 @@ export class UserService {
         password,
         role,
         tenantId,
-    }: UserData): Promise<User> {
+    }: UserData) {
         const user = await this.userRepository.findOne({
             where: { email: email },
         });
@@ -28,21 +28,18 @@ export class UserService {
             const err = createHttpError(400, 'Email is already exists!');
             throw err;
         }
-
+        // Hash the password
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
         try {
-            const userToCreate: Partial<User> = {
+            return await this.userRepository.save({
                 firstName,
                 lastName,
                 email,
-                password,
-                role: role ?? Roles.CUSTOMER,
-            };
-
-            if (tenantId !== undefined) {
-                userToCreate.tenant = { id: tenantId } as User['tenant'];
-            }
-
-            return await this.userRepository.save(userToCreate);
+                password: hashedPassword,
+                role,
+                tenant: tenantId ? { id: tenantId } : undefined,
+            } as UserData);
         } catch {
             const error = createHttpError(
                 500,

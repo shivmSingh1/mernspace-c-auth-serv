@@ -1,17 +1,11 @@
 import 'reflect-metadata';
-import express, {
-    type NextFunction,
-    type Request,
-    type Response,
-} from 'express';
-import type { HttpError } from 'http-errors';
+import express from 'express';
 import router from './routes/auth';
-import logger from './config/logger';
 import cookieParser from 'cookie-parser';
 import tenantRouter from './routes/tenant';
 import cors from 'cors';
 import userRouter from './routes/user';
-// import createHttpError from 'http-errors';
+import { globalErrorHandler } from './middlewares/globalErrorhandler';
 
 const app = express();
 
@@ -31,26 +25,10 @@ app.use(express.static('public'));
 app.use(cookieParser());
 app.use(express.json());
 app.use('/auth', router);
-app.use('/tenant', tenantRouter);
+app.use('/tenants', tenantRouter);
 app.use('/users', userRouter);
 
 //global error handler
-app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
-    logger.error(err);
-
-    const statusCode = err.status || err.statusCode || 500;
-
-    res.status(statusCode).json({
-        errors: [
-            {
-                type: err.name,
-                msg: err.message,
-                path: '',
-                location: '',
-            },
-        ],
-    });
-    next();
-});
+app.use(globalErrorHandler);
 
 export default app;
